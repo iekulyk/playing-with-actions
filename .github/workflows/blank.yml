@@ -52,3 +52,4 @@ jobs:
         run: |
           ls ${{ env.GITHUB_WORKSPACE }}
       - run: echo "This job's status is ${{ job.status }}"
+      - run: echo "App Name ':' ${{ env.APP_NAME }} ${{ env.CONFIG_TYPE }} ${{ env.PYTHON_VERSION }}"
