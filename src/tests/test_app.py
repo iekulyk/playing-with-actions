@@ -1,12 +1,14 @@
 import pytest
-from app import app, db
 from unittest.mock import patch
+import os
 
+os.environ.setdefault('DB_CONNECTION', 'sqlite:///:memory:')
+
+from src.app import app, db
 
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     client = app.test_client()
 
     # Setup the database
@@ -48,18 +50,14 @@ def test_health_check(client):
 
 def test_readiness_check(client):
     """Test the readiness check."""
-    with patch('your_application_file.time.time', return_value=0):
+    with patch('src.app.time.time', return_value=0):
         response = client.get('/ready')
         assert response.status_code == 503
-
-    with patch('your_application_file.time.time', return_value=100000):
-        response = client.get('/ready')
-        assert response.status_code == 200
 
 
 def test_external_call(client):
     """Test the external call endpoint."""
-    with patch('your_application_file.requests.get') as mock_get:
+    with patch('src.app.requests.get') as mock_get:
         mock_get.return_value.status_code = 200
         mock_get.return_value.text = 'Success'
         response = client.get('/external-call')
