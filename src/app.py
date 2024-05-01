@@ -23,6 +23,7 @@ class Counter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer)
 
+
 # Initialize the databased
 with app.app_context():
     db.create_all()
@@ -31,6 +32,7 @@ with app.app_context():
         counter = Counter(value=0)
         db.session.add(counter)
         db.session.commit()
+
 
 @app.route('/')
 def hello():
