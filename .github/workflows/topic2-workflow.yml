@@ -48,3 +48,7 @@ jobs:
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 ./src --show-source --statistics --ignore=E251,E501,W605
+
+      - name: Check Complexity
+        run: |
+          flake8 ./src --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
