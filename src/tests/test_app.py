@@ -6,6 +6,7 @@ os.environ.setdefault('DB_CONNECTION', 'sqlite:///:memory:')
 
 from src.app import app, db
 
+
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
