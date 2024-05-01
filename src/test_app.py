@@ -1,5 +1,9 @@
 import pytest
 from unittest.mock import patch
+import os
+
+os.environ.setdefault('DB_CONNECTION', 'sqlite:///:memory:')
+
 from src.app import app, db
 
 
