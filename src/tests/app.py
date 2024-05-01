@@ -1,7 +1,8 @@
 import pytest
-from app import app, db, Counter
+from app import app, db
 from flask import url_for
 from unittest.mock import patch
+
 
 @pytest.fixture
 def client():
@@ -20,6 +21,7 @@ def client():
         db.session.remove()
         db.drop_all()
 
+
 def test_home_page(client):
     """Test the home page access and counter increment."""
     response = client.get('/')
@@ -30,17 +32,20 @@ def test_home_page(client):
     second_response = client.get('/')
     assert b'Page reload count: 2' in second_response.data
 
+
 def test_docker_logo(client):
     """Test the docker logo endpoint."""
     response = client.get('/logo')
     assert response.status_code == 200
     assert response.content_type == 'image/png'
 
+
 def test_health_check(client):
     """Test the health check endpoint."""
     response = client.get('/health')
     assert response.status_code == 200
     assert response.data == b'Healthy'
+
 
 def test_readiness_check(client):
     """Test the readiness check."""
@@ -51,6 +56,7 @@ def test_readiness_check(client):
     with patch('your_application_file.time.time', return_value=100000):
         response = client.get('/ready')
         assert response.status_code == 200
+
 
 def test_external_call(client):
     """Test the external call endpoint."""
