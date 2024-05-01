@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from app import app, db
+from src.app import app, db
 
 
 @pytest.fixture
