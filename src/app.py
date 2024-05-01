@@ -57,9 +57,11 @@ def hello():
 def docker_logo():
     return send_file('docker-logo.png', mimetype='image/png')
 
+
 @app.route('/health')
 def health_check():
     return Response("Healthy", status=200)
+
 
 @app.route('/ready')
 def readiness_check():
@@ -67,6 +69,7 @@ def readiness_check():
         return Response("Not Ready", status=503)
     else:
         return Response("Ready", status=200)
+
 
 @app.route('/external-call')
 def external_call():
