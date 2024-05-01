@@ -1,6 +1,5 @@
 # import pytest
 # from app import app, db, Counter
-# from flask import url_for
 # from unittest.mock import patch
 
 # @pytest.fixture
