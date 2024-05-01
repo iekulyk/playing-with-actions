@@ -51,14 +51,14 @@ def test_health_check(client):
 
 def test_readiness_check(client):
     """Test the readiness check."""
-    with patch('src.app.time.time', return_value=0):
+    with patch('app.time.time', return_value=0):
         response = client.get('/ready')
         assert response.status_code == 503
 
 
 def test_external_call(client):
     """Test the external call endpoint."""
-    with patch('src.app.requests.get') as mock_get:
+    with patch('app.requests.get') as mock_get:
         mock_get.return_value.status_code = 200
         mock_get.return_value.text = 'Success'
         response = client.get('/external-call')
