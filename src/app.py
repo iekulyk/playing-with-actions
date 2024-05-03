@@ -78,7 +78,7 @@ def external_call():
         Response("EXTERNAL_ENDPOINT not defined", status=500)
     try:
         response = requests.get(external_url)
-        return Response(f"Extarnal call response: {response.text}", status = response.status_code)
+        return Response(f"Extarnal call response: {response.text}", status=response.status_code)
     except Exception as e:
         return Response(f"Error calling external endpoint: {str(e)}", status=500)
 
