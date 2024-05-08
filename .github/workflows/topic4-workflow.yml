@@ -105,7 +105,7 @@ jobs:
       run: helm template kube2py ./kube2py -f ./kube2py/values.yaml
 
     - name: Package Helm
-      run: helm package ./kube2py --appVersion ${{ github.sha }}
+      run: helm package ./kube2py --app-version ${{ github.sha }}
 
     - name: Upload Helm package
       uses: actions/upload-artifact@v4
