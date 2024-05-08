@@ -96,6 +96,9 @@ jobs:
         name: helm-artifacts
         path: .
 
+    - name: Display structure of downloaded files
+      run: ls -R
+
     - name: Set up Helm
       uses: azure/setup-helm@v4.2.0
 
