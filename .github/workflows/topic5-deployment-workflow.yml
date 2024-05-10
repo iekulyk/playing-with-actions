@@ -8,14 +8,12 @@ on:
       environment:
         required: true
         description: 'Environment to deploy to'
-        default: 'dev'
         type: string
 
 jobs:
   deploy-helm:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-
     name: Deplpying to ${{ inputs.environment }}
 
     steps:

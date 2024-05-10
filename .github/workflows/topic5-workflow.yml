@@ -19,6 +19,7 @@ env:
 jobs:
   python-ci:
     runs-on: ubuntu-latest
+    name: Python CI
     defaults:
       run:
         working-directory: ./src
@@ -66,6 +67,7 @@ jobs:
         path: ${{ github.workspace }}/helm-charts
 
   build-image:
+    name: Build and push Docker image
     needs: python-ci
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
@@ -89,6 +91,7 @@ jobs:
         tags: ${{ env.DockerUsername }}/${{ env.DockerImageName }}:${{ github.sha }}
 
   helm-ci:
+    name: Helm CI
     needs: python-ci
     runs-on: ubuntu-latest
 
@@ -117,14 +120,17 @@ jobs:
         path: ./*.tgz
 
   deploy-helm-dev:
+    name: Deploy Helm
     uses: ./.github/workflows/topic5-deployment-workflow.yml
     needs: [ helm-ci, build-image ]
+    secrets: inherit
     with:
       environment: dev
 
   deploy-helm-staging:
+    name: Deploy Helm
     uses: ./.github/workflows/topic5-deployment-workflow.yml
     needs: deploy-helm-dev
+    secrets: inherit
     with:
         environment: staging
-
