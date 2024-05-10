@@ -34,6 +34,11 @@ spec:
        ports:
        - containerPort: 8080
        env:
+       - name: DB_CONNECTION
+         valueFrom:
+           secretKeyRef:
+             name: {{ .Chart.Name }}-secret
+             key: DB_CONNECTION
        - name: EXTERNAL_ENDPOINT
          valueFrom:
            secretKeyRef:
