@@ -150,5 +150,5 @@ jobs:
           --set kube2py.secrets.password="${{ secrets.PASSWORD }}" \
           --set kube2py.secrets.login="${{ secrets.LOGIN }}" \
           --set kube2py.secrets.DB_CONNECTION="${{ secrets.DB_CONNECTION }}" \
-          --set global.environment="${{ vars.ENV_NAME }}"
+          --set global.environment="${{ vars.ENV_NAME }}" \
           --set kube2py.image.version="${{ github.sha }}"
