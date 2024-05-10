@@ -116,8 +116,15 @@ jobs:
         name: helm-package
         path: ./*.tgz
 
-  deploy-helm:
+  deploy-helm-dev:
     uses: ./.github/workflows/topic5-deployment-workflow.yml
     needs: [ helm-ci, build-image ]
     with:
       environment: dev
+
+  deploy-helm-staging:
+    uses: ./.github/workflows/topic5-deployment-workflow.yml
+    needs: deploy-helm-dev
+    with:
+        environment: staging
+
