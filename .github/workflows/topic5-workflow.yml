@@ -2,6 +2,10 @@ name: python-deployment
 
 run-name: ${{ github.actor }} - ${{ github.ref_name }}
 
+concurrency:
+  group: ${{ github.actor }}-python-deployment
+  cancel-in-progress: true
+
 on:
   push:
     branches: ["main"]
