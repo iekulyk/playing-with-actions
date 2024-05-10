@@ -126,6 +126,7 @@ jobs:
     secrets: inherit
     with:
       environment: dev
+      version: ${{ github.sha }}
 
   deploy-helm-staging:
     name: Deploy Helm
