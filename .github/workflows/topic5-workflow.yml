@@ -139,6 +139,6 @@ jobs:
     secrets: inherit
     with:
       environment: staging
-      helm-values-path: ./kube2py/values/staging.yaml
+      helm-values-path: ./kube2py/values/staging.yml
       helm-release-name: kube2py-staging
       version: ${{ github.sha }}
