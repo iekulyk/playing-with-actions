@@ -3,6 +3,9 @@ common:
   environment: "Staging"
   namespace: mateapp-staging
 
+mysql:
+  namespace: mysql-staging
+
 kube2py:
   configs:
     APP_ENV: "User-Testing"
