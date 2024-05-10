@@ -56,7 +56,6 @@ jobs:
         resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
 
     - name: Dry-Run Helm
-          --dry-run
       run: helm upgrade --install --atomic --wait --timeout 1800s --debug ${{ inputs.helm-release-name }} ./kube2py-*.tgz --dry-run  \
           -f ${{ inputs.helm-values-path }} \
           --set mysql.configs.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
