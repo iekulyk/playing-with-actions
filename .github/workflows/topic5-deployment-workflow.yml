@@ -55,8 +55,9 @@ jobs:
         cluster-name: ${{ vars.AZURE_CLUSTER_NAME }}
         resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
 
-    - name: Helm Template
-      run: helm template ${{ inputs.helm-release-name }} ./kube2py-*.tgz \
+    - name: Dry Run Helm
+      run: |
+        helm install --dry-run ${{ inputs.helm-release-name }} ./kube2py-*.tgz  \
           -f ${{ inputs.helm-values-path }} \
           --set mysql.configs.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
           --set mysql.configs.MYSQL_USER="${{ secrets.MYSQL_USER }}" \
@@ -65,7 +66,7 @@ jobs:
           --set kube2py.secrets.login="${{ secrets.LOGIN }}" \
           --set kube2py.secrets.DB_CONNECTION="${{ secrets.DB_CONNECTION }}" \
           --set global.environment="${{ inputs.environment }}" \
-          --set kube2py.image.version="${{ inputs.version }}" \
+          --set kube2py.image.version="${{ inputs.version }}"
 
     - name: Deploy Helm
       run: |
