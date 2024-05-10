@@ -1,157 +1,157 @@
-name: python-deployment
+# name: python-deployment
 
-run-name: ${{ github.actor }} - ${{ github.ref_name }}
+# run-name: ${{ github.actor }} - ${{ github.ref_name }}
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     branches: ["main"]
 
-  workflow_dispatch:
+#   workflow_dispatch:
 
-env:
-  PythonVersion: 3.8
-  DockerUsername: ikulyk404
-  DockerImageName: kube2py
-  EnvironmentName: Development
+# env:
+#   PythonVersion: 3.8
+#   DockerUsername: ikulyk404
+#   DockerImageName: kube2py
+#   EnvironmentName: Development
 
-jobs:
-  python-ci:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src
+# jobs:
+#   python-ci:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./src
 
-    steps:
-    - uses: actions/checkout@v4
+#     steps:
+#     - uses: actions/checkout@v4
 
-    - name: Set up Python ${{ env.PythonVersion }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ env.PythonVersion }}
+#     - name: Set up Python ${{ env.PythonVersion }}
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: ${{ env.PythonVersion }}
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov
-        pip install -r requirements.txt
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install flake8 pytest pytest-cov
+#         pip install -r requirements.txt
 
-    - name: Lint with flake8
-      run: |
-        cd ../
-        flake8 . --show-source --statistics
+#     - name: Lint with flake8
+#       run: |
+#         cd ../
+#         flake8 . --show-source --statistics
 
-    - name: Check Complexity
-      run: |
-        cd ../
-        flake8 . --exit-zero --max-complexity=10 --statistics
+#     - name: Check Complexity
+#       run: |
+#         cd ../
+#         flake8 . --exit-zero --max-complexity=10 --statistics
 
-    - name: Test with pytest
-      run: |
-        pytest -v --cov-report=term-missing --cov=. --cov-report=json
+#     - name: Test with pytest
+#       run: |
+#         pytest -v --cov-report=term-missing --cov=. --cov-report=json
 
-    - name: Upload python artifacts
-      if: ${{ github.ref_name == 'main' }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: python-artifacts
-        path: .
+#     - name: Upload python artifacts
+#       if: ${{ github.ref_name == 'main' }}
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: python-artifacts
+#         path: .
 
-    - name: Upload helm artifacts
-      if: ${{ github.ref_name == 'main' }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: helm-artifacts
-        path: ${{ github.workspace }}/helm-charts
+#     - name: Upload helm artifacts
+#       if: ${{ github.ref_name == 'main' }}
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: helm-artifacts
+#         path: ${{ github.workspace }}/helm-charts
 
-  build-image:
-    needs: python-ci
-    runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' }}
-    steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: python-artifacts
-        path: .
+#   build-image:
+#     needs: python-ci
+#     runs-on: ubuntu-latest
+#     if: ${{ github.ref == 'refs/heads/main' }}
+#     steps:
+#     - uses: actions/download-artifact@v4
+#       with:
+#         name: python-artifacts
+#         path: .
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ env.DockerUsername }}
-        password: ${{ secrets.DOCKER_HUB_SECRET }}
+#     - name: Login to Docker Hub
+#       uses: docker/login-action@v3
+#       with:
+#         username: ${{ env.DockerUsername }}
+#         password: ${{ secrets.DOCKER_HUB_SECRET }}
 
-    - name: Build and push
-      uses: docker/build-push-action@v5
-      with:
-        context: ./src
-        push: true
-        tags: ${{ env.DockerUsername }}/${{ env.DockerImageName }}:${{ github.sha }}
+#     - name: Build and push
+#       uses: docker/build-push-action@v5
+#       with:
+#         context: ./src
+#         push: true
+#         tags: ${{ env.DockerUsername }}/${{ env.DockerImageName }}:${{ github.sha }}
 
-  helm-ci:
-    needs: python-ci
-    runs-on: ubuntu-latest
+#   helm-ci:
+#     needs: python-ci
+#     runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: helm-artifacts
-        path: .
+#     steps:
+#     - uses: actions/download-artifact@v4
+#       with:
+#         name: helm-artifacts
+#         path: .
 
-    - name: Set up Helm
-      uses: azure/setup-helm@v4.2.0
+#     - name: Set up Helm
+#       uses: azure/setup-helm@v4.2.0
 
-    - name: Lint Helm
-      run: helm lint ./kube2py/
+#     - name: Lint Helm
+#       run: helm lint ./kube2py/
 
-    - name: Template Helm
-      run: helm template kube2py ./kube2py -f ./kube2py/values.yaml
+#     - name: Template Helm
+#       run: helm template kube2py ./kube2py -f ./kube2py/values.yaml
 
-    - name: Package Helm
-      run: helm package ./kube2py --app-version ${{ github.sha }}
+#     - name: Package Helm
+#       run: helm package ./kube2py --app-version ${{ github.sha }}
 
-    - name: Upload Helm package
-      uses: actions/upload-artifact@v4
-      with:
-        name: helm-package
-        path: ./*.tgz
+#     - name: Upload Helm package
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: helm-package
+#         path: ./*.tgz
 
-  deploy-helm:
-    needs: [ helm-ci, build-image ]
-    runs-on: ubuntu-latest
-    environment: dev
+#   deploy-helm:
+#     needs: [ helm-ci, build-image ]
+#     runs-on: ubuntu-latest
+#     environment: dev
 
-    name: Deplpying to ${{ vars.ENV_NAME }}
+#     name: Deplpying to ${{ vars.ENV_NAME }}
 
-    steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: helm-package
-        path: .
+#     steps:
+#     - uses: actions/download-artifact@v4
+#       with:
+#         name: helm-package
+#         path: .
 
-    - name: Set up Helm
-      uses: azure/setup-helm@v4.2.0
+#     - name: Set up Helm
+#       uses: azure/setup-helm@v4.2.0
 
-    - uses: azure/setup-kubectl@v4
-      name: Set up Kubectl
+#     - uses: azure/setup-kubectl@v4
+#       name: Set up Kubectl
 
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+#     - uses: azure/login@v1
+#       with:
+#         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - uses: azure/aks-set-context@v3
-      with:
-        cluster-name: ${{ vars.AZURE_CLUSTER_NAME }}
-        resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
+#     - uses: azure/aks-set-context@v3
+#       with:
+#         cluster-name: ${{ vars.AZURE_CLUSTER_NAME }}
+#         resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
 
-    - name: Deploy Helm to Environment
-      run: |
-        helm upgrade --install --atomic  --wait --timeout 3600s --debug kube2py ./kube2py-*.tgz  \
-          --set mysql.configs.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
-          --set mysql.configs.MYSQL_USER="${{ secrets.MYSQL_USER }}" \
-          --set mysql.configs.MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}" \
-          --set kube2py.secrets.password="${{ secrets.PASSWORD }}" \
-          --set kube2py.secrets.login="${{ secrets.LOGIN }}" \
-          --set kube2py.secrets.DB_CONNECTION="${{ secrets.DB_CONNECTION }}" \
-          --set global.environment="${{ vars.ENV_NAME }}"
-          --set kube2py.image.version="${{ github.sha }}"
+#     - name: Deploy Helm to Environment
+#       run: |
+#         helm upgrade --install --atomic  --wait --timeout 3600s --debug kube2py ./kube2py-*.tgz  \
+#           --set mysql.configs.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
+#           --set mysql.configs.MYSQL_USER="${{ secrets.MYSQL_USER }}" \
+#           --set mysql.configs.MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}" \
+#           --set kube2py.secrets.password="${{ secrets.PASSWORD }}" \
+#           --set kube2py.secrets.login="${{ secrets.LOGIN }}" \
+#           --set kube2py.secrets.DB_CONNECTION="${{ secrets.DB_CONNECTION }}" \
+#           --set global.environment="${{ vars.ENV_NAME }}"
+#           --set kube2py.image.version="${{ github.sha }}"
