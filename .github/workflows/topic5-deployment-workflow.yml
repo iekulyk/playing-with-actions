@@ -9,7 +9,10 @@ on:
         required: true
         description: 'Environment to deploy to'
         type: string
-
+      version:
+        required: true
+        description: 'Version of the image to deploy'
+        type: string
 jobs:
   deploy-helm:
     runs-on: ubuntu-latest
@@ -39,7 +42,7 @@ jobs:
         cluster-name: ${{ vars.AZURE_CLUSTER_NAME }}
         resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
 
-    - name: Deploy Helm to Environment
+    - name: Deploy Helm
       run: |
         helm upgrade --install --atomic  --wait --timeout 3600s --debug kube2py ./kube2py-*.tgz  \
           --set mysql.configs.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
@@ -49,4 +52,4 @@ jobs:
           --set kube2py.secrets.login="${{ secrets.LOGIN }}" \
           --set kube2py.secrets.DB_CONNECTION="${{ secrets.DB_CONNECTION }}" \
           --set global.environment="${{ inputs.environment }}"
-          --set kube2py.image.version="${{ github.sha }}"
+          --set kube2py.image.version="${{ inputs.version }}"

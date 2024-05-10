@@ -134,3 +134,4 @@ jobs:
     secrets: inherit
     with:
         environment: staging
+        version: ${{ github.sha }}
