@@ -17,7 +17,7 @@ jobs:
   deploy-helm:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    name: Deplpying to ${{ inputs.environment }}
+    name: ${{ inputs.environment }}
 
     steps:
     - uses: actions/download-artifact@v4
@@ -51,5 +51,5 @@ jobs:
           --set kube2py.secrets.password="${{ secrets.PASSWORD }}" \
           --set kube2py.secrets.login="${{ secrets.LOGIN }}" \
           --set kube2py.secrets.DB_CONNECTION="${{ secrets.DB_CONNECTION }}" \
-          --set global.environment="${{ inputs.environment }}"
+          --set global.environment="${{ inputs.environment }}" \
           --set kube2py.image.version="${{ inputs.version }}"
