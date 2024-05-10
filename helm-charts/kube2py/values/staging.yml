@@ -1,6 +1,7 @@
 
 common:
   environment: "Staging"
+  namespace: mateapp-staging
 
 kube2py:
   configs:
