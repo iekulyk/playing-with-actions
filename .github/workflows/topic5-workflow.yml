@@ -136,4 +136,5 @@ jobs:
     with:
       environment: staging
       helm-values-path: ./kube2py/values/staging.yaml
+      helm-release-name: kube2py-staging
       version: ${{ github.sha }}
