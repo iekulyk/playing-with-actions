@@ -30,14 +30,13 @@ jobs:
     - uses: azure/setup-kubectl@v4
       name: Set up Kubectl
 
-    - uses: azure/login@v1
+    - uses: azure/login@v1.4.3
+      id: login
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        client-id: ${{ vars.AZURE_CLIENT_ID }}
-        tenant-id: ${{ vars.AZURE_TENANT_ID }}
-        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
     - uses: azure/aks-set-context@v3
+      id: set-context
       with:
         cluster-name: ${{ vars.AZURE_CLUSTER_NAME }}
         resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
