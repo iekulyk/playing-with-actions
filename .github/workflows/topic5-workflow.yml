@@ -134,5 +134,6 @@ jobs:
     needs: deploy-helm-dev
     secrets: inherit
     with:
-        environment: staging
-        version: ${{ github.sha }}
+      environment: staging
+      helm-values-path: ./kube2py/values/staging.yaml
+      version: ${{ github.sha }}

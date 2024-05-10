@@ -13,6 +13,10 @@ on:
         required: true
         description: 'Version of the image to deploy'
         type: string
+      helm-values-path:
+        description: 'Path to the helm values file'
+        type: string
+        default: './kube2py/values.yaml'
 jobs:
   deploy-helm:
     runs-on: ubuntu-latest
@@ -23,6 +27,11 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: helm-package
+        path: .
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: helm-artifacts
         path: .
 
     - name: Set up Helm
@@ -44,7 +53,9 @@ jobs:
 
     - name: Deploy Helm
       run: |
+        tar -xvf kube2py-*.tgz
         helm upgrade --install --atomic  --wait --timeout 3600s --debug kube2py ./kube2py-*.tgz  \
+          -f ${{ inputs.helm-values-path }} \
           --set mysql.configs.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
           --set mysql.configs.MYSQL_USER="${{ secrets.MYSQL_USER }}" \
           --set mysql.configs.MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}" \
