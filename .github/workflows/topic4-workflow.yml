@@ -135,13 +135,16 @@ jobs:
     - uses: azure/setup-kubectl@v4
       name: Set up Kubectl
 
-    - uses: azure/aks-set-context@v1
+    - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - uses: azure/aks-set-context@v3
+      with:
         cluster-name: ${{ vars.AZURE_CLUSTER_NAME }}
         resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
 
-    - name: Deploy Helm to ${{ vars.ENV_NAME }}
+    - name: Deploy Helm to Environment
       run: |
         helm upgrade --install --atomic  --wait --timeout 3600s --debug kube2py ./kube2py-*.tgz  \
           --set mysql.configs.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
