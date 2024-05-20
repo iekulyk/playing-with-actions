@@ -17,9 +17,11 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: 'dev'
         type: option
-        options: ['dev', 'staging', 'production']
+        options:
+        - dev
+        - staging
+        - production
       message:
         description: 'Message to include in the deployment'
         required: false
