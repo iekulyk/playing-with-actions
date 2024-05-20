@@ -17,7 +17,7 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        type: option
+        type: choice
         options:
         - dev
         - staging
