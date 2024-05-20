@@ -3,7 +3,7 @@ name: python-deployment
 run-name: ${{ github.actor }} - ${{ github.ref_name }}
 
 concurrency:
-  group: ${{ github.actor }}-python-deployment
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 on:
